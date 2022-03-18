@@ -1,0 +1,1 @@
+https://gamelifttutorialaron.auth.us-east-1.amazoncognito.com/login?client_id=7juhi5cgooe6tbqhu5najmjhp6&response_type=code&scope=aws.cognito.signin.user.admin+email+gamelift.tutorial.api/access+openid+phone+profile&redirect_uri=https://4jgrc6tfui.execute-api.us-east-1.amazonaws.com/test/getsigninresult

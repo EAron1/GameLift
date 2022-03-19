@@ -1,6 +1,9 @@
 # Visual Studio 2015 user specific files
 .vs/
 
+# Visual Studio 2015 database file
+*.VC.db
+
 # Compiled Object files
 *.slo
 *.lo
@@ -49,10 +52,6 @@ SourceArt/**/*.tga
 Binaries/*
 Plugins/*/Binaries/*
 
-# Packages
-
-Packages/*
-
 # Builds
 Build/*
 
@@ -76,3 +75,20 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+WindowsNoEditor/
+
+LinuxNoEditor/
+
+LinuxServer/
+
+Urls/
+
+WindowsClient/
+
+WindowsServer/
+
+LinuxServer/
+
+# GameLiftServerSDK library files
+!Plugins/GameLiftServerSDK/ThirdParty/GameLiftServerSDK/**

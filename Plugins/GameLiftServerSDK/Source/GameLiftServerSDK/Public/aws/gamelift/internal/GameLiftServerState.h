@@ -57,9 +57,9 @@ namespace Internal
 
         GenericOutcome TerminateGameSession();
 
-        std::string GetGameSessionId() const;
+        std::string GetGameSessionId();
 
-        long GetTerminationTime() const;
+        long GetTerminationTime();
 
         GenericOutcome AcceptPlayerSession(const std::string& playerSessionId);
 
@@ -71,9 +71,7 @@ namespace Internal
 
         GenericOutcome StopMatchmaking(const Aws::GameLift::Server::Model::StopMatchBackfillRequest& request);
 
-        GetInstanceCertificateOutcome GetInstanceCertificate();
-
-        bool IsProcessReady() const { return m_processReady; }
+        bool IsProcessReady() { return m_processReady; }
 
         //From Network::AuxProxyMessageHandler
         void OnStartGameSession(GameSession& gameSession, sio::message::list& ack_resp) override;
@@ -89,7 +87,7 @@ namespace Internal
 
         void ReportHealth();
         void HealthCheck();
-        bool DefaultHealthCheck() const { return true; }
+        bool DefaultHealthCheck() { return true; }
 
         std::function<void(Aws::GameLift::Server::Model::GameSession)> m_onStartGameSession;
         std::function<void(Aws::GameLift::Server::Model::UpdateGameSession)> m_onUpdateGameSession;
@@ -142,8 +140,6 @@ namespace Internal
         StartMatchBackfillOutcome BackfillMatchmaking(const Aws::GameLift::Server::Model::StartMatchBackfillRequest& request);
 
         GenericOutcome StopMatchmaking(const Aws::GameLift::Server::Model::StopMatchBackfillRequest& request);
-
-        GetInstanceCertificateOutcome GetInstanceCertificate();
 
         bool IsProcessReady() { return m_processReady; }
 

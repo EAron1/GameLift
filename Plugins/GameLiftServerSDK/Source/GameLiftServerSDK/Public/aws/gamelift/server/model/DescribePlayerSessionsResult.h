@@ -10,12 +10,7 @@
 *
 */
 #pragma once
-
-#if defined(_MSC_VER) && !defined(GAMELIFT_USE_STD)
-#pragma warning(push) // Save warning settings.
-#pragma warning(disable : 4996) // Disable deprecated warning for strncpy
-#endif
-
+#pragma warning(disable:4996)
 #include <aws/gamelift/common/GameLift_EXPORTS.h>
 #include <aws/gamelift/server/model/PlayerSession.h>
 
@@ -291,6 +286,8 @@ public:
      */
     inline DescribePlayerSessionsResult& WithNextToken(const char* value) { SetNextToken(value); return *this;}
 
+    inline int GetPlayerSessionsCount() { return m_playerSessions_count; }
+
   private:
     PlayerSession m_playerSessions[MAX_PLAYER_SESSIONS];
     int m_playerSessions_count;
@@ -302,7 +299,3 @@ public:
 } // namespace Server
 } // namespace GameLift
 } // namespace Aws
-
-#if defined(_MSC_VER) && !defined(GAMELIFT_USE_STD)
-#pragma warning(pop) // Restore warnings to previous state.
-#endif

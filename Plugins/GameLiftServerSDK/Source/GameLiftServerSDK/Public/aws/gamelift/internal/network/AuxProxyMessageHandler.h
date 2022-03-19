@@ -30,8 +30,6 @@ namespace Network
         virtual void OnStartGameSession(GameSession& gameSession, sio::message::list& ack_resp) = 0;
         virtual void OnUpdateGameSession(UpdateGameSession& gameSession, sio::message::list& ack_resp) = 0;
         virtual void OnTerminateProcess(long terminationTime) = 0;
-
-        virtual ~AuxProxyMessageHandler() = default;
     };
 } //namespace Network
 } //namespace Internal

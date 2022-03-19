@@ -10,12 +10,6 @@
 *
 */
 #pragma once
-
-#if defined(_MSC_VER) && !defined(GAMELIFT_USE_STD)
-#pragma warning(push) // Save warning settings.
-#pragma warning(disable : 4996) // Disable deprecated warning for strncpy
-#endif
-
 #include <aws/gamelift/common/GameLift_EXPORTS.h>
 #include <aws/gamelift/server/model/AttributeValue.h>
 
@@ -449,7 +443,3 @@ private:
 } // namespace Server
 } // namespace GameLift
 } // namespace Aws
-
-#if defined(_MSC_VER) && !defined(GAMELIFT_USE_STD)
-#pragma warning(pop) // Restore warnings to previous state.
-#endif

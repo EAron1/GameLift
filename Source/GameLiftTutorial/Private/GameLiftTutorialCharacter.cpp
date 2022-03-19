@@ -1,6 +1,6 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "GameLiftCharacter.h"
+#include "GameLiftTutorialCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -8,11 +8,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameLiftTutorialPlayerState.h"
+#include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
-// AGameLiftCharacter
+// AGameLiftTutorialCharacter
 
-AGameLiftCharacter::AGameLiftCharacter()
+AGameLiftTutorialCharacter::AGameLiftTutorialCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -50,69 +53,65 @@ AGameLiftCharacter::AGameLiftCharacter()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AGameLiftCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void AGameLiftTutorialCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AGameLiftCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AGameLiftCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AGameLiftTutorialCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AGameLiftTutorialCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AGameLiftCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AGameLiftTutorialCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AGameLiftCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &AGameLiftTutorialCharacter::LookUpAtRate);
 
 	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AGameLiftCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AGameLiftCharacter::TouchStopped);
+	PlayerInputComponent->BindTouch(IE_Pressed, this, &AGameLiftTutorialCharacter::TouchStarted);
+	PlayerInputComponent->BindTouch(IE_Released, this, &AGameLiftTutorialCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AGameLiftCharacter::OnResetVR);
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AGameLiftTutorialCharacter::OnResetVR);
+
+	PlayerInputComponent->BindAction("ReturnToMainMenu", IE_Pressed, this, &AGameLiftTutorialCharacter::ReturnToMainMenu);
 }
 
 
-void AGameLiftCharacter::OnResetVR()
+void AGameLiftTutorialCharacter::OnResetVR()
 {
-	// If GameLift is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in GameLift.Build.cs is not automatically propagated
-	// and a linker error will result.
-	// You will need to either:
-	//		Add "HeadMountedDisplay" to [YourProject].Build.cs PublicDependencyModuleNames in order to build successfully (appropriate if supporting VR).
-	// or:
-	//		Comment or delete the call to ResetOrientationAndPosition below (appropriate if not supporting VR)
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
-void AGameLiftCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
+void AGameLiftTutorialCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		Jump();
 }
 
-void AGameLiftCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
+void AGameLiftTutorialCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
 }
 
-void AGameLiftCharacter::TurnAtRate(float Rate)
+void AGameLiftTutorialCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AGameLiftCharacter::LookUpAtRate(float Rate)
+void AGameLiftTutorialCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AGameLiftCharacter::MoveForward(float Value)
+void AGameLiftTutorialCharacter::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -124,9 +123,9 @@ void AGameLiftCharacter::MoveForward(float Value)
 	}
 }
 
-void AGameLiftCharacter::MoveRight(float Value)
+void AGameLiftTutorialCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ( (Controller != NULL) && (Value != 0.0f) )
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -136,5 +135,36 @@ void AGameLiftCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void AGameLiftTutorialCharacter::ReturnToMainMenu() {
+	FString LevelName = "MainMenuMap";
+
+	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName), false, "");
+}
+
+void AGameLiftTutorialCharacter::OnRep_PlayerState() {
+	Super::OnRep_PlayerState();
+
+	APlayerState* OwningPlayerState = GetPlayerState();
+	if (OwningPlayerState != nullptr) {
+		AGameLiftTutorialPlayerState* OwningGameLiftTutorialPlayerState = Cast<AGameLiftTutorialPlayerState>(OwningPlayerState);
+		if (OwningGameLiftTutorialPlayerState != nullptr) {
+			FString TeamName = OwningGameLiftTutorialPlayerState->Team;
+
+			if (TeamName.Len() > 0) {
+				UMaterialInstanceDynamic* OwningPlayerMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
+
+				if (TeamName.Equals("cowboys")) {
+					OwningPlayerMaterial->SetVectorParameterValue("BodyColor", FLinearColor::Red);
+				}
+				else if (TeamName.Equals("aliens")) {
+					OwningPlayerMaterial->SetVectorParameterValue("BodyColor", FLinearColor::Blue);
+				}
+
+				GetMesh()->SetMaterial(0, OwningPlayerMaterial);
+			}
+		}
 	}
 }

@@ -8,15 +8,13 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GAMELIFT_API UTextReaderComponent : public UActorComponent
+class GAMELIFTTUTORIAL_API UTextReaderComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	
 	UTextReaderComponent();
-		
+
 	UFUNCTION()
-	FString ReadFile(FString FilePath);
-		
+		FString ReadFile(FString FilePath);
 };

@@ -10,12 +10,10 @@
  * 
  */
 UCLASS()
-class GAMELIFT_API AMainMenuGameMode : public AGameModeBase
+class GAMELIFTTUTORIAL_API AMainMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 public:
-
 	AMainMenuGameMode();
-
 };

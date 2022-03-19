@@ -11,18 +11,16 @@ UTextReaderComponent::UTextReaderComponent()
 
 }
 
-
-FString UTextReaderComponent::ReadFile(FString FilePath)
-{
+FString UTextReaderComponent::ReadFile(FString FilePath) {
 	FString DirectoryPath = FPaths::ProjectContentDir();
-	FString FullPath = DirectoryPath + "/"  + FilePath;
+	FString FullPath = DirectoryPath + "/" + FilePath;
 	FString Result;
 	IPlatformFile& File = FPlatformFileManager::Get().GetPlatformFile();
 
-	if (File.FileExists(*FullPath))
-	{
+	if (File.FileExists(*FullPath)) {
 		FFileHelper::LoadFileToString(Result, *FullPath);
 	}
 
 	return Result;
 }
+

@@ -4,9 +4,6 @@
 #include "MainMenuGameMode.h"
 #include "MainMenuHUD.h"
 
-AMainMenuGameMode::AMainMenuGameMode()
-{
+AMainMenuGameMode::AMainMenuGameMode() {
 	HUDClass = AMainMenuHUD::StaticClass();
-
-
 }

@@ -1,10 +1,10 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
-public class GameLift : ModuleRules
+public class GameLiftTutorial : ModuleRules
 {
-	public GameLift(ReadOnlyTargetRules Target) : base(Target)
+	public GameLiftTutorial(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
